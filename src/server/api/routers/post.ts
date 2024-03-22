@@ -18,7 +18,7 @@ export const postRouter = createTRPCRouter({
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       return ctx.db.occasion.findMany({
-        data: {
+        where: {
           name: input.name,
         },
       });
@@ -30,7 +30,8 @@ export const postRouter = createTRPCRouter({
       // simulate a slow db call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      return ctx.db.occasion.findMany({});
+      return ctx.db.occasion.findMany({
+      });
     }),
 
   getLatest: publicProcedure.query(({ ctx }) => {
