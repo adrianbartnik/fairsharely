@@ -7,14 +7,20 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    DATABASE_URL: z
+    POSTGRES_PRISMA_URL: z
       .string()
       .url()
-      /*.refine(
-        (str) => !str.includes("YOUR_MYSQL_URL_HERE"),
-        "You forgot to change the default URL"
-      )*/
-      .default("bla"),
+      .refine(
+        (str) => !str.includes("..."),
+        "You forgot to change the POSTGRES_PRISMA_URL"
+      ),
+      POSTGRES_PRISMA_URL_NON_POOLING: z
+      .string()
+      .url()
+      .refine(
+        (str) => !str.includes("..."),
+        "You forgot to change the POSTGRES_PRISMA_URL_NON_POOLING"
+      ),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
