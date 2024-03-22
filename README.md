@@ -1,29 +1,42 @@
-# Create T3 App
+# Fairsharely 🤑
+
+This app makes it easy to track and manage expenses within a group.
+It allows each participant to add and manage expenses made for an occasion, e.g an event or a shared trip.
+Afterwards, the app calculates the easiest way how to balance expenses by minimizing the total amount of transactions for everyone.
+
+**It's currently heavily in work-in-progress.**
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
-## What's next? How do I make an app with this?
+## Getting Started
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+Run this app locally via:
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+```
+npm install
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+npm run dev
+```
 
-## Learn More
+You probably also need to update the values in the `.env` file to set a correct database connection URL.
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+### Database Schema
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+This project is using Prisma as database ORM and a Postgres instance at Vercel.
+After each change, you need to regenerate the types and also synchronise the schema with the database.
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+Do that via:
 
-## How do I deploy this?
+```
+npx prisma generate     # Regenerates the Prisma schema
+npx prisma format       # Formats the schema file
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+npx prisma db push      # Pushes changes to database
+
+npx prisma studio       # Opens a local interface to inspect database
+```
+
+## Deployment
+
+This app is currently deployed via Vercel.
+See the repository description for the latest link.
