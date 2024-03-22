@@ -11,21 +11,30 @@ export const postRouter = createTRPCRouter({
       };
     }),
 
-  create: publicProcedure
+  filter: publicProcedure
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
       // simulate a slow db call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      return ctx.db.post.create({
+      return ctx.db.occasion.findMany({
         data: {
           name: input.name,
         },
       });
     }),
 
+  getAll: publicProcedure
+    .input(z.object({ name: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      // simulate a slow db call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      return ctx.db.occasion.findMany({});
+    }),
+
   getLatest: publicProcedure.query(({ ctx }) => {
-    return ctx.db.post.findFirst({
+    return ctx.db.occasion.findFirst({
       orderBy: { createdAt: "desc" },
     });
   }),
