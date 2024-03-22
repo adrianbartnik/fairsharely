@@ -10,10 +10,11 @@ export const env = createEnv({
     DATABASE_URL: z
       .string()
       .url()
-      .refine(
+      /*.refine(
         (str) => !str.includes("YOUR_MYSQL_URL_HERE"),
         "You forgot to change the default URL"
-      ),
+      )*/
+      .default("bla"),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
