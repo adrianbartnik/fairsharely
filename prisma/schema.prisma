@@ -2,25 +2,63 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["driverAdapters"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
-    provider = "postgresql"
-    
-    url = env("POSTGRES_PRISMA_URL") // uses connection pooling
-    directUrl = env("POSTGRES_PRISMA_URL_NON_POOLING") // uses a direct connection
+  provider = "postgresql"
 
-    // If you have enabled foreign key constraints for your database, remove this line.
-    relationMode = "prisma"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_PRISMA_URL_NON_POOLING") // uses a direct connection
+
+  // If you have enabled foreign key constraints for your database, remove this line.
+  relationMode = "prisma"
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Occasion {
+  id Int @id @default(autoincrement())
 
-    @@index([name])
+  name         String
+  description  String?
+  currency     Currency      @default(EURO)
+  category     String
+  participants Participant[]
+  expenses     Expense[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Currency {
+  EURO
+  DOLLAR
+}
+
+model Participant {
+  name String
+
+  occasionId Int      @unique
+  occasion   Occasion @relation(fields: [occasionId], references: [id])
+}
+
+model Expense {
+  id Int @id @default(autoincrement())
+
+  title                String
+  amount               Int
+  distributionStrategy DistributionStrategy?
+
+  occasionId Int      @unique
+  occasion   Occasion @relation(fields: [occasionId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DistributionStrategy {
+  name String
+
+  expenseId Int     @unique
+  expense   Expense @relation(fields: [expenseId], references: [id])
 }
