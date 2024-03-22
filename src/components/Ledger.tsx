@@ -1,13 +1,11 @@
-import { useState } from 'react';
 
 function BudgetEntry() {
-  const [participants, setParticipants] = useState([]);
 
   return (
     <form>
       <label>Who participated?
         <input
-          type="text" 
+          type="text"
           value="test"
         />
       </label>
