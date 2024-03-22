@@ -8,6 +8,12 @@ type Transaction = {
     amount: number;
 };
 
+type FinalRepayment = {
+    from: string;
+    to: string;
+    amount: number;
+};
+
 function Calculator() {
     const [participants, setParticipants] = useState<string[]>(["Horst", "Dieter"]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -36,11 +42,12 @@ function Calculator() {
         ]);
     }
 
-    calculate(participants, transactions)
+    const repayments = new DebitCalculator(participants, transactions).calculate() ?? [];
+    console.log("Repayments: ", repayments)
 
     return (
-        <div className="h-screen">
-            <div className="App h-screen">
+        <div className="h-screen bg-gray-800">
+            <div className="App">
                 <header>
                     <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
                         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
@@ -102,17 +109,39 @@ function Calculator() {
                     </div>
                 </section>
 
-                <br />
+                <section className="bg-white dark:bg-gray-900">
+                    <div className="gap-16 items-center py-8 px-4 mx-auto max-w-screen-xl lg:grid lg:grid-cols-2 lg:py-16 lg:px-6">
+                        <div className="font-light text-gray-500 sm:text-lg dark:text-gray-400">
+                            <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">We didn't reinvent the wheel</h2>
+                            <p className="mb-4">Current Participants: {participants.join(", ")}</p>
 
-                <div>
-                    Current Participants: {participants.join(", ")}
-                    <AddParticipant newParticipantAdded={addNewParticipant} />
-                    <BudgetEntry participants={participants} transactionAdded={addNewTransaction} />
-                    <ul>
-                        {transactions.map((transaction, index) => (<li key={index}>{transaction.debitor} owes {transaction.amount} to {transaction.creditor}</li>))}
-                    </ul>
-                </div>
-                
+
+                            <div className="m-10">
+                                <AddParticipant newParticipantAdded={addNewParticipant} />
+                            </div>
+
+                            <div className="m-10">
+                                <BudgetEntry participants={participants} transactionAdded={addNewTransaction} />
+                            </div>
+
+                            <ul>
+                                {transactions.map((transaction, index) => (<li key={index}>{transaction.debitor} owes {transaction.amount} to {transaction.creditor}</li>))}
+                            </ul>
+
+                            <h2 className="mb-4 text-2xl tracking-tight font-extrabold text-gray-900 dark:text-white">Final Repayments</h2>
+
+                            <ol>
+                                {repayments.map((repayment, index) => (<li key={index}>{repayment.from} owes {repayment.amount} to {repayment.to}</li>))}
+                            </ol>
+
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 mt-8">
+                            <img className="w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-2.png" alt="office content 1" />
+                            <img className="mt-4 w-full lg:mt-10 rounded-lg" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-1.png" alt="office content 2" />
+                        </div>
+                    </div>
+                </section>
+
                 <footer className="p-4 bg-white md:p-8 lg:p-10 dark:bg-gray-800">
                     <div className="mx-auto max-w-screen-xl text-center">
                         <a href="#" className="flex justify-center items-center text-2xl font-semibold text-gray-900 dark:text-white">
@@ -167,120 +196,130 @@ function Calculator() {
 
 export default Calculator;
 
-// Create function that initializes a 2D array with 0s
-const initialiseEmptyArrayWithZeros = (n: number) => Array.from({ length: n }, () => Array.from({ length: n }, () => 0));
+class DebitCalculator {
+    private participants: string[];
+    private transactions: Transaction[];
+    private graphStructure: number[][];
 
-const calculate = (participants: string[], transactions: Transaction[]) => {
-
-    const numberOfParticipants = participants.length
-    const numberOfTransactions = transactions.length
-    const N = numberOfParticipants;
-
-    if (numberOfParticipants === 0 || numberOfTransactions === 0)
-        return;
-
-    const graphStructure: number[][] = initialiseEmptyArrayWithZeros(numberOfParticipants);
-
-    for (const transaction of transactions) {
-        const indexCreditor = participants.indexOf(transaction.creditor)
-        const indexDebitor = participants.indexOf(transaction.debitor)
-
-        graphStructure[indexDebitor]![indexCreditor] += transaction.amount
+    constructor(participants: string[], transactions: Transaction[]) {
+        console.log("Called twice")
+        this.participants = participants;
+        this.transactions = transactions;
+        this.graphStructure = this.initialiseEmptyArrayWithZeros(participants.length);
     }
 
-    console.log(graphStructure)
+    private initialiseEmptyArrayWithZeros(n: number): number[][] { return Array.from({ length: n }, () => Array.from({ length: n }, () => 0)) }
 
+    calculate() {
 
-    // A utility function that returns
-    // index of minimum value in arr
-    function getMin(arr: number[]) {
-        let minInd = 0;
-        for (let i = 1; i < N; i++)
-            if (arr[i]! < arr[minInd]!)
-                minInd = i;
-        return minInd;
-    }
-
-    // A utility function that returns
-    // index of maximum value in arr
-    function getMax(arr: number[]) {
-        let maxInd = 0;
-        for (let i = 1; i < N; i++)
-            if (arr[i]! > arr[maxInd]!)
-                maxInd = i;
-        return maxInd;
-    }
-
-    // A utility function to return minimum of 2 values
-    function minOf2(x: number, y: number) {
-        return (x < y) ? x : y;
-    }
-
-    // amount[p] indicates the net amount
-    // to be credited/debited to/from person 'p'
-    // If amount[p] is positive, then
-    // i'th person will amount[i]
-    // If amount[p] is negative, then
-    // i'th person will give -amount[i]
-    function minCashFlowRec(amount: number[]) {
-
-        // Find the indexes of minimum and
-        // maximum values in amount
-        // amount[mxCredit] indicates the maximum amount
-        // to be given (or credited) to any person .
-        // And amount[mxDebit] indicates the maximum amount
-        // to be taken(or debited) from any person.
-        // So if there is a positive value in amount,
-        // then there must be a negative value
-        const mxCredit = getMax(amount), mxDebit = getMin(amount);
-
-        // If both amounts are 0, then
-        // all amounts are settled
-        if (amount[mxCredit] === 0 && amount[mxDebit] === 0)
+        if (this.participants.length === 0 || this.transactions.length === 0)
             return;
 
-        // Find the minimum of two amounts
-        const min = minOf2(-amount[mxDebit]!, amount[mxCredit]!);
-        amount[mxCredit] -= min;
-        amount[mxDebit] += min;
+        for (const transaction of this.transactions) {
+            const indexCreditor = this.participants.indexOf(transaction.creditor)
+            const indexDebitor = this.participants.indexOf(transaction.debitor)
 
-        // If minimum is the maximum amount to be
-        console.log(participants[mxDebit] + " pays " + min + " to " + participants[mxCredit]);
+            this.graphStructure[indexDebitor]![indexCreditor] += transaction.amount
+        }
 
-        // Recur for the amount array.
-        // Note that it is guaranteed that
-        // the recursion would terminate
-        // as either amount[mxCredit]  or
-        // amount[mxDebit] becomes 0
-        minCashFlowRec(amount);
+
+        // A utility function that returns
+        // index of minimum value in arr
+        function getMin(participants: string[], arr: number[]) {
+            let minInd = 0;
+            for (let i = 1; i < participants.length; i++)
+                if (arr[i]! < arr[minInd]!)
+                    minInd = i;
+            return minInd;
+        }
+
+        // A utility function that returns
+        // index of maximum value in arr
+        function getMax(participants: string[], arr: number[]) {
+            let maxInd = 0;
+            for (let i = 1; i < participants.length; i++)
+                if (arr[i]! > arr[maxInd]!)
+                    maxInd = i;
+            return maxInd;
+        }
+
+        // A utility function to return minimum of 2 values
+        function minOf2(x: number, y: number) {
+            return (x < y) ? x : y;
+        }
+
+        // amount[p] indicates the net amount
+        // to be credited/debited to/from person 'p'
+        // If amount[p] is positive, then
+        // i'th person will amount[i]
+        // If amount[p] is negative, then
+        // i'th person will give -amount[i]
+        function minCashFlowRec(participants: string[], amount: number[], finalRepayment: FinalRepayment[]) {
+
+            // Find the indexes of minimum and
+            // maximum values in amount
+            // amount[mxCredit] indicates the maximum amount
+            // to be given (or credited) to any person .
+            // And amount[mxDebit] indicates the maximum amount
+            // to be taken(or debited) from any person.
+            // So if there is a positive value in amount,
+            // then there must be a negative value
+            const mxCredit = getMax(participants, amount), mxDebit = getMin(participants, amount);
+
+            // If both amounts are 0, then
+            // all amounts are settled
+            if (amount[mxCredit] === 0 && amount[mxDebit] === 0)
+                return;
+
+            // Find the minimum of two amounts
+            const min = minOf2(-amount[mxDebit]!, amount[mxCredit]!);
+            amount[mxCredit] -= min;
+            amount[mxDebit] += min;
+
+            // If minimum is the maximum amount to be
+            console.log(participants[mxDebit] + " pays " + min + " to " + participants[mxCredit]);
+            finalRepayment.push({ from: participants[mxDebit]!, to: participants[mxCredit]!, amount: min });
+
+
+            // Recur for the amount array.
+            // Note that it is guaranteed that
+            // the recursion would terminate
+            // as either amount[mxCredit]  or
+            // amount[mxDebit] becomes 0
+            minCashFlowRec(participants, amount, finalRepayment);
+        }
+
+        // Given a set of persons as graph
+        // where graph[i][j] indicates
+        // the amount that person i needs to
+        // pay person j, this function
+        // finds and prints the minimum
+        // cash flow to settle all debts.
+        function minCashFlow(participants: string[], graph: number[][], finalRepayment: FinalRepayment[]) {
+            // Create an array amount,
+            // initialize all value in it as 0.
+            const amount = Array.from({ length: participants.length }, (_) => 0);
+
+            // Calculate the net amount to
+            // be paid to person 'p', and
+            // stores it in amount[p]. The
+            // value of amount[p] can be
+            // calculated by subtracting
+            // debts of 'p' from credits of 'p'
+            for (let p = 0; p < participants.length; p++)
+                for (let i = 0; i < participants.length; i++)
+                    amount[p] += (graph[i]![p]! - graph[p]![i]!);
+
+            minCashFlowRec(participants, amount, finalRepayment);
+        }
+
+        const finalRepayment: FinalRepayment[] = [];
+
+        // Print the solution
+        minCashFlow(this.participants, this.graphStructure, finalRepayment);
+
+        return finalRepayment;
+
+        // This code is contributed by Amit Katiyar - https://www.geeksforgeeks.org/minimize-cash-flow-among-given-set-friends-borrowed-money/
     }
-
-    // Given a set of persons as graph
-    // where graph[i][j] indicates
-    // the amount that person i needs to
-    // pay person j, this function
-    // finds and prints the minimum
-    // cash flow to settle all debts.
-    function minCashFlow(graph: number[][]) {
-        // Create an array amount,
-        // initialize all value in it as 0.
-        const amount = Array.from({ length: N }, (_, i) => 0);
-
-        // Calculate the net amount to
-        // be paid to person 'p', and
-        // stores it in amount[p]. The
-        // value of amount[p] can be
-        // calculated by subtracting
-        // debts of 'p' from credits of 'p'
-        for (let p = 0; p < N; p++)
-            for (let i = 0; i < N; i++)
-                amount[p] += (graph[i]![p]! - graph[p]![i]!);
-
-        minCashFlowRec(amount);
-    }
-
-    // Print the solution
-    minCashFlow(graphStructure);
-
-    // This code is contributed by Amit Katiyar - https://www.geeksforgeeks.org/minimize-cash-flow-among-given-set-friends-borrowed-money/
 }
