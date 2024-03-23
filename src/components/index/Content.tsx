@@ -9,15 +9,13 @@ export default function Content() {
             We did not reinvent the wheel
           </h2>
           <p className="mb-4">
-            We are strategists, designers and developers. Innovators and problem
-            solvers. Small enough to be simple and quick, but big enough to
-            deliver the scope you want at the pace you need. Small enough to be
-            simple and quick, but big enough to deliver the scope you want at
-            the pace you need.
+            We are strategists, designers and developers. Innovators and problem solvers. Small enough to be simple and
+            quick, but big enough to deliver the scope you want at the pace you need. Small enough to be simple and
+            quick, but big enough to deliver the scope you want at the pace you need.
           </p>
           <p>
-            We are strategists, designers and developers. Innovators and problem
-            solvers. Small enough to be simple and quick.
+            We are strategists, designers and developers. Innovators and problem solvers. Small enough to be simple and
+            quick.
           </p>
         </div>
         <div className="mt-8 grid grid-cols-2 gap-4">

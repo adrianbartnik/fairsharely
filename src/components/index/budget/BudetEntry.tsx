@@ -43,10 +43,7 @@ function BudgetEntry({ participants, transactionAdded }: BudgetEntryProps) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label
-        htmlFor="creditor"
-        className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-      >
+      <label htmlFor="creditor" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
         Who paid?
       </label>
       <select
@@ -57,10 +54,7 @@ function BudgetEntry({ participants, transactionAdded }: BudgetEntryProps) {
         {selectLabels}
       </select>
 
-      <label
-        htmlFor="debitor"
-        className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-      >
+      <label htmlFor="debitor" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
         For whom?
       </label>
       <select
@@ -71,10 +65,7 @@ function BudgetEntry({ participants, transactionAdded }: BudgetEntryProps) {
         {selectLabels}
       </select>
 
-      <label
-        htmlFor="amount"
-        className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-      >
+      <label htmlFor="amount" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
         Select a number:
       </label>
       <input

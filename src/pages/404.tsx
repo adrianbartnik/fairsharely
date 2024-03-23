@@ -12,8 +12,7 @@ export default function Custom404() {
             Something is missing.
           </p>
           <p className="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">
-            Sorry, we can not find that page. You will find lots to explore on
-            the home page.{" "}
+            Sorry, we can not find that page. You will find lots to explore on the home page.{" "}
           </p>
           <Link
             href="/"

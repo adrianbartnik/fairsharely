@@ -5,10 +5,7 @@ import Image from "next/image";
 import { DebitCalculator, type Transaction } from "~/domain/DebitCalculator";
 
 export default function Budget() {
-  const [participants, setParticipants] = useState<string[]>([
-    "Horst",
-    "Dieter",
-  ]);
+  const [participants, setParticipants] = useState<string[]>(["Horst", "Dieter"]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   function addNewParticipant(newParticipant: string) {
@@ -17,11 +14,7 @@ export default function Budget() {
     setParticipants([...participants, newParticipant]);
   }
 
-  function addNewTransaction(
-    creditor: string,
-    debitor: string,
-    amount: number,
-  ) {
+  function addNewTransaction(creditor: string, debitor: string, amount: number) {
     console.log(`New transaction received ${creditor}  ${debitor}  ${amount}`);
 
     const newTransaction: Transaction = {
@@ -33,8 +26,7 @@ export default function Budget() {
     setTransactions([...transactions, newTransaction]);
   }
 
-  const repayments =
-    new DebitCalculator(participants, transactions).calculate() ?? [];
+  const repayments = new DebitCalculator(participants, transactions).calculate() ?? [];
   console.log("Repayments: ", repayments);
 
   return (
@@ -44,26 +36,20 @@ export default function Budget() {
           <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
             We did not reinvent the wheel
           </h2>
-          <p className="mb-4">
-            Current Participants: {participants.join(", ")}
-          </p>
+          <p className="mb-4">Current Participants: {participants.join(", ")}</p>
 
           <div className="m-10">
             <AddParticipant newParticipantAdded={addNewParticipant} />
           </div>
 
           <div className="m-10">
-            <BudgetEntry
-              participants={participants}
-              transactionAdded={addNewTransaction}
-            />
+            <BudgetEntry participants={participants} transactionAdded={addNewTransaction} />
           </div>
 
           <ul>
             {transactions.map((transaction, index) => (
               <li key={index}>
-                {transaction.debitor} owes {transaction.amount} to{" "}
-                {transaction.creditor}
+                {transaction.debitor} owes {transaction.amount} to {transaction.creditor}
               </li>
             ))}
           </ul>

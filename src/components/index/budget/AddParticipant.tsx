@@ -10,15 +10,12 @@ interface AddParticipantProps {
   newParticipantAdded: (name: string) => void;
 }
 
-export default function AddParticipant({
-  newParticipantAdded: addParticipant,
-}: AddParticipantProps) {
+export default function AddParticipant({ newParticipantAdded: addParticipant }: AddParticipantProps) {
   function handleSubmit(e: React.FormEvent<YourFormElement>) {
     // Prevent the browser from reloading the page
     e.preventDefault();
 
-    const newParticipantName =
-      e.currentTarget.elements.newParticipantName.value;
+    const newParticipantName = e.currentTarget.elements.newParticipantName.value;
 
     console.log(`Adding new user: ${newParticipantName}`);
 
@@ -30,10 +27,7 @@ export default function AddParticipant({
       <label>
         Add new user:
         <div>
-          <label
-            htmlFor="newParticipantName"
-            className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-          >
+          <label htmlFor="newParticipantName" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
             User name
           </label>
           <input

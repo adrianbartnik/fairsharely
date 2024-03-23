@@ -152,37 +152,35 @@ export default function CreateOccasionForm() {
         </div>
       </div>
 
-      <p className="my-4 text-white">
-        <div className="mx-2 leading-9">
-          {participants.map((participant, index) => (
-            <span
-              key={index}
-              className="me-2 inline-flex cursor-default items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-base font-medium text-blue-800 dark:bg-gray-200 dark:text-gray-800"
+      <div className="mx-2 leading-9">
+        {participants.map((participant, index) => (
+          <span
+            key={index}
+            className="me-2 inline-flex cursor-default items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-base font-medium text-blue-800 dark:bg-gray-200 dark:text-gray-800"
+          >
+            {participant}
+            <button
+              className="ml-2 content-center text-red-500"
+              onClick={() => removeParticipant(index)}
             >
-              {participant}
-              <button
-                className="ml-2 content-center text-red-500"
-                onClick={() => removeParticipant(index)}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="h-6 w-6"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="h-6 w-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18 18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </span>
-          ))}
-        </div>
-      </p>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18 18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </span>
+        ))}
+      </div>
 
       <button
         type="submit"

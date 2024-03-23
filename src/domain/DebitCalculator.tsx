@@ -19,9 +19,7 @@ export class DebitCalculator {
     console.log("Called twice");
     this.participants = participants;
     this.transactions = transactions;
-    this.graphStructure = this.initialiseEmptyArrayWithZeros(
-      participants.length,
-    );
+    this.graphStructure = this.initialiseEmptyArrayWithZeros(participants.length);
   }
 
   private initialiseEmptyArrayWithZeros(n: number): number[][] {
@@ -29,8 +27,7 @@ export class DebitCalculator {
   }
 
   calculate() {
-    if (this.participants.length === 0 || this.transactions.length === 0)
-      return;
+    if (this.participants.length === 0 || this.transactions.length === 0) return;
 
     for (const transaction of this.transactions) {
       const indexCreditor = this.participants.indexOf(transaction.creditor);
@@ -43,8 +40,7 @@ export class DebitCalculator {
     // index of minimum value in arr
     function getMin(participants: string[], arr: number[]) {
       let minInd = 0;
-      for (let i = 1; i < participants.length; i++)
-        if (arr[i]! < arr[minInd]!) minInd = i;
+      for (let i = 1; i < participants.length; i++) if (arr[i]! < arr[minInd]!) minInd = i;
       return minInd;
     }
 
@@ -52,8 +48,7 @@ export class DebitCalculator {
     // index of maximum value in arr
     function getMax(participants: string[], arr: number[]) {
       let maxInd = 0;
-      for (let i = 1; i < participants.length; i++)
-        if (arr[i]! > arr[maxInd]!) maxInd = i;
+      for (let i = 1; i < participants.length; i++) if (arr[i]! > arr[maxInd]!) maxInd = i;
       return maxInd;
     }
 
@@ -68,11 +63,7 @@ export class DebitCalculator {
     // i'th person will amount[i]
     // If amount[p] is negative, then
     // i'th person will give -amount[i]
-    function minCashFlowRec(
-      participants: string[],
-      amount: number[],
-      finalRepayment: FinalRepayment[],
-    ) {
+    function minCashFlowRec(participants: string[], amount: number[], finalRepayment: FinalRepayment[]) {
       // Find the indexes of minimum and
       // maximum values in amount
       // amount[mxCredit] indicates the maximum amount
@@ -94,13 +85,7 @@ export class DebitCalculator {
       amount[mxDebit] += min;
 
       // If minimum is the maximum amount to be
-      console.log(
-        participants[mxDebit] +
-          " pays " +
-          min +
-          " to " +
-          participants[mxCredit],
-      );
+      console.log(participants[mxDebit] + " pays " + min + " to " + participants[mxCredit]);
       finalRepayment.push({
         from: participants[mxDebit]!,
         to: participants[mxCredit]!,
@@ -121,11 +106,7 @@ export class DebitCalculator {
     // pay person j, this function
     // finds and prints the minimum
     // cash flow to settle all debts.
-    function minCashFlow(
-      participants: string[],
-      graph: number[][],
-      finalRepayment: FinalRepayment[],
-    ) {
+    function minCashFlow(participants: string[], graph: number[][], finalRepayment: FinalRepayment[]) {
       // Create an array amount,
       // initialize all value in it as 0.
       const amount = Array.from({ length: participants.length }, (_) => 0);
@@ -137,8 +118,7 @@ export class DebitCalculator {
       // calculated by subtracting
       // debts of 'p' from credits of 'p'
       for (let p = 0; p < participants.length; p++)
-        for (let i = 0; i < participants.length; i++)
-          amount[p] += graph[i]![p]! - graph[p]![i]!;
+        for (let i = 0; i < participants.length; i++) amount[p] += graph[i]![p]! - graph[p]![i]!;
 
       minCashFlowRec(participants, amount, finalRepayment);
     }

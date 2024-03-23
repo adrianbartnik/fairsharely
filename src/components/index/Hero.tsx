@@ -10,8 +10,8 @@ export default function Hero() {
             Payments tool for software companies
           </h1>
           <p className="mb-6 max-w-2xl font-light text-gray-500 md:text-lg lg:mb-8 lg:text-xl dark:text-gray-400">
-            From checkout to global sales tax compliance, companies around the
-            world use Flowbite to simplify their payment stack.
+            From checkout to global sales tax compliance, companies around the world use Flowbite to simplify their
+            payment stack.
           </p>
           <Link
             href="create"
