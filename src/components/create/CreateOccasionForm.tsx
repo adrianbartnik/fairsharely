@@ -1,21 +1,24 @@
 import { useState } from "react";
+import React, { type KeyboardEvent } from "react";
+import { api } from "~/utils/api";
 
 interface FormElements extends HTMLFormControlsCollection {
   newParticipantName: HTMLInputElement;
 }
 
-interface YourFormElement extends HTMLFormElement {
+interface ReactHTMLFormElement extends HTMLFormElement {
   readonly elements: FormElements;
 }
 
 export default function CreateOccasionForm() {
+  const [newParticipantName, setNewParticipantName] = useState<string>("");
   const [participants, setParticipants] = useState<string[]>([]);
   const [highlightedCategory, setHighlightedCategory] = useState<string>("");
 
   const categories = [
     "Vacation 🏝️",
     "Birthday 🎂",
-    "Weekend Trip ✈️",
+    "Trip 🛫",
     "Event 🎤",
     "Other 💬",
   ];
@@ -28,20 +31,30 @@ export default function CreateOccasionForm() {
     setParticipants([...participants, newParticipant]);
   }
 
-  function handleSubmit(e: React.FormEvent<YourFormElement>) {
+  const createOccasionInBackendMutation = api.post.createOccasion.useMutation();
+
+  const handleSubmit = async (e: React.FormEvent<ReactHTMLFormElement>) => {
     // Prevent the browser from reloading the page
     e.preventDefault();
 
-    const newParticipantName =
-      e.currentTarget.elements.newParticipantName.value;
+    createOccasionInBackendMutation.mutate({});
+  };
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleAddParticipantButton();
+      event.preventDefault();
+    }
+  };
+
+  const handleAddParticipantButton = () => {
     if (!newParticipantName || participants.includes(newParticipantName)) {
       return;
     }
 
-    e.currentTarget.reset();
     addNewParticipant(newParticipantName);
-  }
+    setNewParticipantName("");
+  };
 
   const currencyLabels = [
     <option key="0" value="" disabled hidden>
@@ -65,6 +78,15 @@ export default function CreateOccasionForm() {
 
   return (
     <form method="post" onSubmit={handleSubmit}>
+      {createOccasionInBackendMutation.error && (
+        <p>
+          Something went wrong! {createOccasionInBackendMutation.error.message}
+        </p>
+      )}
+      {createOccasionInBackendMutation.data && (
+        <p>Occasion created successfully!</p>
+      )}
+
       <label
         htmlFor="name"
         className="mb-2 mt-6 block text-sm font-medium text-gray-900 dark:text-white"
@@ -137,6 +159,9 @@ export default function CreateOccasionForm() {
           </label>
           <input
             type="text"
+            value={newParticipantName}
+            onChange={(e) => setNewParticipantName(e.target.value)}
+            onKeyDown={handleKeyDown}
             id="newParticipantName"
             className=" block w-11/12 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
             placeholder="John"
@@ -144,7 +169,8 @@ export default function CreateOccasionForm() {
         </div>
         <div className="w-1/4">
           <button
-            type="submit"
+            type="button"
+            onClick={handleAddParticipantButton}
             className="mt-4 block w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             Add Participant
