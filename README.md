@@ -4,7 +4,7 @@ This app makes it easy to track and manage expenses within a group.
 It allows each participant to add and manage expenses made for an occasion, e.g an event or a shared trip.
 Afterwards, the app calculates the easiest way how to balance expenses by minimizing the total amount of transactions for everyone.
 
-**It's currently heavily in work-in-progress.**
+**It's currently heavily work-in-progress.**
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 

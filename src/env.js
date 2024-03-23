@@ -12,14 +12,14 @@ export const env = createEnv({
       .url()
       .refine(
         (str) => !str.includes("..."),
-        "You forgot to change the POSTGRES_PRISMA_URL"
+        "You forgot to change the POSTGRES_PRISMA_URL",
       ),
-      POSTGRES_PRISMA_URL_NON_POOLING: z
+    POSTGRES_PRISMA_URL_NON_POOLING: z
       .string()
       .url()
       .refine(
         (str) => !str.includes("..."),
-        "You forgot to change the POSTGRES_PRISMA_URL_NON_POOLING"
+        "You forgot to change the POSTGRES_PRISMA_URL_NON_POOLING",
       ),
     NODE_ENV: z
       .enum(["development", "test", "production"])
@@ -41,7 +41,8 @@ export const env = createEnv({
    */
   runtimeEnv: {
     POSTGRES_PRISMA_URL: process.env.POSTGRES_PRISMA_URL,
-    POSTGRES_PRISMA_URL_NON_POOLING: process.env.POSTGRES_PRISMA_URL_NON_POOLING,
+    POSTGRES_PRISMA_URL_NON_POOLING:
+      process.env.POSTGRES_PRISMA_URL_NON_POOLING,
     NODE_ENV: process.env.NODE_ENV,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
