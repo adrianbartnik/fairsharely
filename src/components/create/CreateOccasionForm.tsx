@@ -1,8 +1,13 @@
+import { Currency } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import React, { type KeyboardEvent } from "react";
 import { api } from "~/utils/api";
 
 interface FormElements extends HTMLFormControlsCollection {
+  name: HTMLInputElement;
+  description: HTMLInputElement;
+  currency: HTMLInputElement;
   newParticipantName: HTMLInputElement;
 }
 
@@ -14,6 +19,7 @@ export default function CreateOccasionForm() {
   const [newParticipantName, setNewParticipantName] = useState<string>("");
   const [participants, setParticipants] = useState<string[]>([]);
   const [highlightedCategory, setHighlightedCategory] = useState<string>("");
+  const router = useRouter();
 
   const categories = [
     "Vacation 🏝️",
@@ -37,7 +43,22 @@ export default function CreateOccasionForm() {
     // Prevent the browser from reloading the page
     e.preventDefault();
 
-    createOccasionInBackendMutation.mutate({});
+    Currency.EURO;
+    const tmpCurrencyValue =
+      e.currentTarget.elements.currency.value.toUpperCase();
+
+    if (tmpCurrencyValue !== "EURO" && tmpCurrencyValue !== "DOLLAR") {
+      console.error("Invalid currency value");
+      return;
+    }
+
+    createOccasionInBackendMutation.mutate({
+      name: e.currentTarget.elements.name.value,
+      description: e.currentTarget.elements.description.value,
+      currency: tmpCurrencyValue,
+      category: highlightedCategory,
+      participants: participants.map((participant) => ({ name: participant })),
+    });
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -71,6 +92,11 @@ export default function CreateOccasionForm() {
     );
   }
 
+  if (createOccasionInBackendMutation.isSuccess) {
+    console.log("Occasion created successfully!");
+    router.push("/overview");
+  }
+
   function removeParticipant(index: number) {
     const newParticipants = participants.filter((_, i) => i !== index);
     setParticipants(newParticipants);
@@ -96,6 +122,7 @@ export default function CreateOccasionForm() {
       <input
         type="text"
         id="name"
+        required
         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
         placeholder="Weekend Trip"
       />

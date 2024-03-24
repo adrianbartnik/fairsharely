@@ -1,3 +1,4 @@
+import { Currency } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
@@ -22,25 +23,26 @@ export const postRouter = createTRPCRouter({
     }),
 
   createOccasion: publicProcedure
-    .input(z.object({}))
-    .mutation(async ({ ctx }) => {
+    .input(
+      z.object({
+        name: z.string().min(1),
+        description: z.string().min(1),
+        currency: z.nativeEnum(Currency),
+        category: z.string().min(1),
+        participants: z.array(z.object({ name: z.string().min(1) })),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
       console.log("Creating occasion");
 
       return ctx.db.occasion.create({
         data: {
-          name: "bla",
-          description: "bla",
-          currency: "EURO",
-          category: "bla",
+          name: input.name,
+          description: input.description,
+          currency: input.currency,
+          category: input.category,
           participants: {
-            create: [
-              {
-                name: "Horst",
-              },
-              {
-                name: "Dieter",
-              },
-            ],
+            create: input.participants,
           },
         },
       });
