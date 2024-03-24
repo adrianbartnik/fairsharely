@@ -33,8 +33,9 @@ enum Currency {
 }
 
 model Participant {
-  id   Int    @id @default(autoincrement())
-  name String
+  id                 Int                @id @default(autoincrement())
+  name               String
+  participiantShares ParticipantShare[]
 
   occasion   Occasion @relation(fields: [occasionId], references: [id])
   occasionId Int
@@ -43,9 +44,9 @@ model Participant {
 model Expense {
   id Int @id @default(autoincrement())
 
-  title                String
-  amount               Int
-  distributionStrategy DistributionStrategy?
+  title            String
+  amount           Int
+  participantShare ParticipantShare[]
 
   occasion   Occasion @relation(fields: [occasionId], references: [id])
   occasionId Int
@@ -54,10 +55,13 @@ model Expense {
   updatedAt DateTime @updatedAt
 }
 
-model DistributionStrategy {
-  id   Int    @id @default(autoincrement())
-  name String
+model ParticipantShare {
+  id     Int @id @default(autoincrement())
+  amount Int
+
+  participant   Participant @relation(fields: [participantId], references: [id])
+  participantId Int
 
   expense   Expense @relation(fields: [expenseId], references: [id])
-  expenseId Int     @unique
+  expenseId Int
 }

@@ -1,6 +1,6 @@
 import Header from "~/components/index/Header";
 import Footer from "~/components/index/Footer";
-import CreateOccasion from "~/components/index/CreateOccasion";
+import CreateOccasion from "~/components/create/CreateOccasion";
 
 function Calculator() {
   return (

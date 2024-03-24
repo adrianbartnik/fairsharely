@@ -1,4 +1,3 @@
-import { Currency } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import React, { type KeyboardEvent } from "react";
@@ -21,13 +20,7 @@ export default function CreateOccasionForm() {
   const [highlightedCategory, setHighlightedCategory] = useState<string>("");
   const router = useRouter();
 
-  const categories = [
-    "Vacation 🏝️",
-    "Birthday 🎂",
-    "Trip 🛫",
-    "Event 🎤",
-    "Other 💬",
-  ];
+  const categories = ["Vacation 🏝️", "Birthday 🎂", "Trip 🛫", "Event 🎤", "Other 💬"];
 
   const handleCategoryClick = (participant: string) => {
     setHighlightedCategory(participant);
@@ -43,9 +36,7 @@ export default function CreateOccasionForm() {
     // Prevent the browser from reloading the page
     e.preventDefault();
 
-    Currency.EURO;
-    const tmpCurrencyValue =
-      e.currentTarget.elements.currency.value.toUpperCase();
+    const tmpCurrencyValue = e.currentTarget.elements.currency.value.toUpperCase();
 
     if (tmpCurrencyValue !== "EURO" && tmpCurrencyValue !== "DOLLAR") {
       console.error("Invalid currency value");
@@ -93,8 +84,8 @@ export default function CreateOccasionForm() {
   }
 
   if (createOccasionInBackendMutation.isSuccess) {
-    console.log("Occasion created successfully!");
-    router.push("/overview");
+    console.log("Occasion created successfully!", createOccasionInBackendMutation.data);
+    router.push(`/overview/${createOccasionInBackendMutation.data.id}`);
   }
 
   function removeParticipant(index: number) {
@@ -105,18 +96,11 @@ export default function CreateOccasionForm() {
   return (
     <form method="post" onSubmit={handleSubmit}>
       {createOccasionInBackendMutation.error && (
-        <p>
-          Something went wrong! {createOccasionInBackendMutation.error.message}
-        </p>
+        <p>Something went wrong! {createOccasionInBackendMutation.error.message}</p>
       )}
-      {createOccasionInBackendMutation.data && (
-        <p>Occasion created successfully!</p>
-      )}
+      {createOccasionInBackendMutation.data && <p>Occasion created successfully!</p>}
 
-      <label
-        htmlFor="name"
-        className="mb-2 mt-6 block text-sm font-medium text-gray-900 dark:text-white"
-      >
+      <label htmlFor="name" className="mb-2 mt-6 block text-sm font-medium text-gray-900 dark:text-white">
         Occasion Name
       </label>
       <input
@@ -127,10 +111,7 @@ export default function CreateOccasionForm() {
         placeholder="Weekend Trip"
       />
 
-      <label
-        htmlFor="description"
-        className="mb-2 mt-6 block text-sm font-medium text-gray-900 dark:text-white"
-      >
+      <label htmlFor="description" className="mb-2 mt-6 block text-sm font-medium text-gray-900 dark:text-white">
         Description
       </label>
       <input
@@ -140,10 +121,7 @@ export default function CreateOccasionForm() {
         placeholder="Describe your occasion"
       />
 
-      <label
-        htmlFor="currency"
-        className="mb-2 mt-6 block text-sm font-medium text-gray-900 dark:text-white"
-      >
+      <label htmlFor="currency" className="mb-2 mt-6 block text-sm font-medium text-gray-900 dark:text-white">
         Currency
       </label>
       <select
@@ -154,10 +132,7 @@ export default function CreateOccasionForm() {
         {currencyLabels}
       </select>
 
-      <label
-        htmlFor="category"
-        className="mb-2 mt-6 block text-sm font-medium text-gray-900 dark:text-white"
-      >
+      <label htmlFor="category" className="mb-2 mt-6 block text-sm font-medium text-gray-900 dark:text-white">
         Occasion Category
       </label>
       <ul className="flex flex-wrap">
@@ -212,10 +187,7 @@ export default function CreateOccasionForm() {
             className="me-2 inline-flex cursor-default items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-base font-medium text-blue-800 dark:bg-gray-200 dark:text-gray-800"
           >
             {participant}
-            <button
-              className="ml-2 content-center text-red-500"
-              onClick={() => removeParticipant(index)}
-            >
+            <button className="ml-2 content-center text-red-500" onClick={() => removeParticipant(index)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -224,11 +196,7 @@ export default function CreateOccasionForm() {
                 stroke="currentColor"
                 className="h-6 w-6"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18 18 6M6 6l12 12"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
               </svg>
             </button>
           </span>

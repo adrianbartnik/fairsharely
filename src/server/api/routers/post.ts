@@ -33,8 +33,6 @@ export const postRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      console.log("Creating occasion");
-
       return ctx.db.occasion.create({
         data: {
           name: input.name,
@@ -48,10 +46,50 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
+  createExpense: publicProcedure
+    .input(
+      z.object({
+        title: z.string().min(1),
+        amount: z.number(),
+        occasionId: z.number(),
+        participantShares: z.array(
+          z.object({ participantId: z.number(), amount: z.number() }),
+        ),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.expense.create({
+        data: {
+          title: input.title,
+          amount: input.amount,
+          occasionId: input.occasionId,
+          participantShare: {
+            create: input.participantShares,
+          },
+        },
+      });
+    }),
+
   getAll: publicProcedure
     .input(z.object({ name: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
       return ctx.db.occasion.findMany({});
+    }),
+
+  getById: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.occasion.findUnique({
+        where: { id: input.id },
+        include: {
+          participants: true,
+          expenses: {
+            include: {
+              participantShare: true,
+            },
+          },
+        },
+      });
     }),
 
   getLatest: publicProcedure.query(({ ctx }) => {

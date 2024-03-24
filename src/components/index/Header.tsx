@@ -1,11 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Header() {
   return (
     <header>
       <nav className="border-gray-200 bg-white px-4 py-2.5 lg:px-6 dark:bg-gray-800">
         <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between">
-          <a href="https://flowbite.com" className="flex items-center">
+          <Link href="/" className="flex items-center">
             <Image
               width={100}
               height={100}
@@ -13,8 +14,10 @@ export default function Header() {
               className="mr-3 h-6 sm:h-9"
               alt="Flowbite Logo"
             />
-            <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Flowbite</span>
-          </a>
+            <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+              Flowbite
+            </span>
+          </Link>
           <div className="flex items-center lg:order-2">
             <a
               href="#"
@@ -36,7 +39,12 @@ export default function Header() {
               aria-expanded="false"
             >
               <span className="sr-only">Open main menu</span>
-              <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                className="h-6 w-6"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <path
                   fillRule="evenodd"
                   d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
@@ -57,7 +65,10 @@ export default function Header() {
               </svg>
             </button>
           </div>
-          <div className="hidden w-full items-center justify-between lg:order-1 lg:flex lg:w-auto" id="mobile-menu-2">
+          <div
+            className="hidden w-full items-center justify-between lg:order-1 lg:flex lg:w-auto"
+            id="mobile-menu-2"
+          >
             <ul className="mt-4 flex flex-col font-medium lg:mt-0 lg:flex-row lg:space-x-8">
               <li>
                 <a

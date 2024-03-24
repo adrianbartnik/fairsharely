@@ -1,16 +1,14 @@
 import Image from "next/image";
-import CreateOccasionForm from "../create/CreateOccasionForm";
+import CreateExpenseForm from "./CreateExpenseForm";
 
-export default function CreateOccasion() {
+export default function CreateExpense() {
   return (
     <section className="bg-white dark:bg-gray-900">
       <div className="mx-auto max-w-screen-xl items-center gap-16 px-4 py-8 lg:grid lg:grid-cols-2 lg:px-6 lg:py-16">
         <div className="font-light text-gray-500 sm:text-lg dark:text-gray-400">
-          <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-            Create the occasion
-          </h2>
+          <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">Add an expense</h2>
 
-          <CreateOccasionForm />
+          <CreateExpenseForm />
         </div>
         <div className="mt-8 grid grid-cols-2 gap-4">
           <Image
