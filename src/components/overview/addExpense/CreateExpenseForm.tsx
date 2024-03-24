@@ -1,4 +1,5 @@
-import { useRouter } from "next/navigation";
+import { useRouter as nav_router } from "next/navigation";
+import { useRouter } from "next/router";
 import { type ChangeEvent, useState } from "react";
 import React from "react";
 import { api } from "~/utils/api";
@@ -23,9 +24,12 @@ interface FormElements extends HTMLFormControlsCollection {
 
 export default function CreateExpenseForm() {
   const [name, setName] = useState<string>("");
+  const [creditor, setCreditor] = useState<string>("");
   const [amount, setAmount] = useState<number>(0);
   const [participants, setParticipants] = useState<{ id: number; name: string }[]>([]);
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
+  const router = nav_router();
+  const custom_router = useRouter();
 
   const expense = api.post.getById.useQuery({ id: 1 });
   const createExpenseMutation = api.post.createExpense.useMutation();
@@ -100,12 +104,18 @@ export default function CreateExpenseForm() {
       console.error("Invalid expense details");
       return;
     }
+
+    const debitorName = expense.data?.participants.find((participant) => participant.name === creditor);
+
     createExpenseMutation.mutate({
       title: name,
       amount,
-      occasionId: 1,
+      occasionId: Number(custom_router.query.id),
+      paidByParticipantId: debitorName?.id ?? 0,
       participantShares: selectedParticipants.map((debitor) => {
         const debitorName = expense.data?.participants.find((participant) => participant.name === debitor);
+
+        console.log("Debitors: ", debitorName);
 
         return {
           participantId: debitorName?.id ?? 0,
@@ -115,6 +125,14 @@ export default function CreateExpenseForm() {
     });
   };
 
+  function onSelectCreditor(event: ChangeEvent<HTMLSelectElement>): void {
+    setCreditor(event.target.value);
+  }
+
+  if (createExpenseMutation.isSuccess) {
+    // router.back();
+  }
+
   return (
     <form method="post" onSubmit={handleSubmit}>
       <label htmlFor="creditor" className="mb-2 mt-6 block text-sm font-medium text-gray-900 dark:text-white">
@@ -122,6 +140,7 @@ export default function CreateExpenseForm() {
       </label>
       <select
         id="creditor"
+        onChange={onSelectCreditor}
         defaultValue=""
         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
       >
@@ -159,12 +178,27 @@ export default function CreateExpenseForm() {
       </label>
       {debitors}
 
-      <button
-        type="submit"
-        className="mt-12 block w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-      >
-        Create Expense
-      </button>
+      <div className="mb-4 flex">
+        <div className="w-3/12">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="mt-4 block w-full rounded-lg bg-gray-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-gray-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Back
+          </button>
+        </div>
+        <div className="w-2/12" />
+
+        <div className="w-7/12">
+          <button
+            type="submit"
+            className="mt-4 block w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Create Expense
+          </button>
+        </div>
+      </div>
     </form>
   );
 }

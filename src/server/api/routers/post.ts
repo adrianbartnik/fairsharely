@@ -4,23 +4,19 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
+  hello: publicProcedure.input(z.object({ text: z.string() })).query(({ input }) => {
+    return {
+      greeting: `Hello ${input.text}`,
+    };
+  }),
 
-  filter: publicProcedure
-    .input(z.object({ name: z.string().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      return ctx.db.occasion.findMany({
-        where: {
-          name: input.name,
-        },
-      });
-    }),
+  filter: publicProcedure.input(z.object({ name: z.string().min(1) })).mutation(async ({ ctx, input }) => {
+    return ctx.db.occasion.findMany({
+      where: {
+        name: input.name,
+      },
+    });
+  }),
 
   createOccasion: publicProcedure
     .input(
@@ -52,9 +48,8 @@ export const postRouter = createTRPCRouter({
         title: z.string().min(1),
         amount: z.number(),
         occasionId: z.number(),
-        participantShares: z.array(
-          z.object({ participantId: z.number(), amount: z.number() }),
-        ),
+        paidByParticipantId: z.number(),
+        participantShares: z.array(z.object({ participantId: z.number(), amount: z.number() })),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -63,6 +58,7 @@ export const postRouter = createTRPCRouter({
           title: input.title,
           amount: input.amount,
           occasionId: input.occasionId,
+          paidByParticipantId: input.paidByParticipantId,
           participantShare: {
             create: input.participantShares,
           },
@@ -70,27 +66,23 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
-  getAll: publicProcedure
-    .input(z.object({ name: z.string().min(1) }))
-    .query(async ({ ctx, input }) => {
-      return ctx.db.occasion.findMany({});
-    }),
+  getAll: publicProcedure.input(z.object({ name: z.string().min(1) })).query(async ({ ctx, input }) => {
+    return ctx.db.occasion.findMany({});
+  }),
 
-  getById: publicProcedure
-    .input(z.object({ id: z.number() }))
-    .query(async ({ ctx, input }) => {
-      return ctx.db.occasion.findUnique({
-        where: { id: input.id },
-        include: {
-          participants: true,
-          expenses: {
-            include: {
-              participantShare: true,
-            },
+  getById: publicProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
+    return ctx.db.occasion.findUnique({
+      where: { id: input.id },
+      include: {
+        participants: true,
+        expenses: {
+          include: {
+            participantShare: true,
           },
         },
-      });
-    }),
+      },
+    });
+  }),
 
   getLatest: publicProcedure.query(({ ctx }) => {
     return ctx.db.occasion.findFirst({

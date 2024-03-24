@@ -36,6 +36,7 @@ model Participant {
   id                 Int                @id @default(autoincrement())
   name               String
   participiantShares ParticipantShare[]
+  paidExpenses       Expense[]
 
   occasion   Occasion @relation(fields: [occasionId], references: [id])
   occasionId Int
@@ -50,6 +51,9 @@ model Expense {
 
   occasion   Occasion @relation(fields: [occasionId], references: [id])
   occasionId Int
+
+  paidByParticipant   Participant @relation(fields: [paidByParticipantId], references: [id])
+  paidByParticipantId Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

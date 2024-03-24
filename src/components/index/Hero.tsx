@@ -7,11 +7,10 @@ export default function Hero() {
       <div className="mx-auto grid max-w-screen-xl px-4 py-8 lg:grid-cols-12 lg:gap-8 lg:py-16 xl:gap-0">
         <div className="mr-auto place-self-center lg:col-span-7">
           <h1 className="mb-4 max-w-2xl text-4xl font-extrabold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-white">
-            Payments tool for software companies
+            Settle expenses with your friends, family, and colleagues.
           </h1>
           <p className="mb-6 max-w-2xl font-light text-gray-500 md:text-lg lg:mb-8 lg:text-xl dark:text-gray-400">
-            From checkout to global sales tax compliance, companies around the world use Flowbite to simplify their
-            payment stack.
+            Easily manage and split expenses for your next trip, party, or group activity. Fairsharely has you covered.
           </p>
           <Link
             href="create"
